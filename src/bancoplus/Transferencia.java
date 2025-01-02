@@ -50,13 +50,12 @@ public class Transferencia implements Operacion{
 
     @Override
     public String toString(){
-        String texto = String.format("%nCodigo: %d%n" +
+        return String.format("%nCodigo: %d%n" +
                 "Realizada el %02d de %02d de %d a las %02d:%02d%n" +
                 "Cuenta Origen: %s ----> Cuenta Destino: %s%n" +
                 "Cantidad Transferida: %.2f MXN%n", this.getCodigo(), Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
                 Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.HOUR), Calendar.getInstance().get(Calendar.MINUTE),
                 this.getCuentaOrigen().getNumero(), this.getCuentaDestino().getNumero(), this.getMonto());
-        return texto;
     }
 }

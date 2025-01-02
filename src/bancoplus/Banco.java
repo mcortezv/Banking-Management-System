@@ -1,82 +1,63 @@
 package bancoplus;
-import bancoplus.excepciones.ExcepcionCuentaNoEcontrada;
-import bancoplus.excepciones.ExcepcionCuentasIguales;
-import bancoplus.excepciones.ExcepcionFondosInsuficientes;
-import bancoplus.excepciones.ExcepcionSaldoMaximoSuperado;
+import bancoplus.excepciones.*;
 import java.util.*;
 
-
 public class Banco {
-    protected final static float MXN = 1;
-    protected final static float USD = 17;
-    protected final static float EU = 20;
+    protected final static ArrayList<Object> MXN = new ArrayList<>(Arrays.asList(1, "MXN"));
+    protected final static ArrayList<Object> USD = new ArrayList<>(Arrays.asList(17, "USD"));
+    protected final static ArrayList<Object> EU = new ArrayList<>(Arrays.asList(20, "EU"));
     private final List<Cuenta> cuentas;
     private final LinkedList<Deposito> depositos;
     private final LinkedList<Transferencia> transferencias;
-    private final GregorianCalendar fechaHoy;
     private final Map<Integer, Operacion> operaciones;
 
     public Banco() {
         this.cuentas = new LinkedList<>();
         this.depositos = new LinkedList<>();
         this.transferencias = new LinkedList<>();
-        this.fechaHoy = new GregorianCalendar();
         this.operaciones = new HashMap<>();
         this.cuentas.add(new Cuenta("1111", 1000));
         this.cuentas.add(new Cuenta("2222", 500));
         this.cuentas.add(new Cuenta("3333", 2000));
     }
 
-    private Cuenta recuperarCuenta(String numeroCuenta){
-        Cuenta cuentaRecuperada = this.cuentas.stream()
+    public Cuenta recuperarCuenta(String numeroCuenta){
+        return this.cuentas.stream()
                             .filter(cuenta -> cuenta.getNumero().equals(numeroCuenta))
                             .findAny()
                             .orElse(null);
-        return cuentaRecuperada;
-    }
-
-    public void validarCuenta(String numeroCuenta) throws ExcepcionCuentaNoEcontrada {
-        Cuenta validarCuenta = this.cuentas.stream()
-                .filter(cuenta -> cuenta.getNumero().equals(numeroCuenta))
-                .findAny()
-                .orElse(null);
-        if (validarCuenta == null){
-            throw new ExcepcionCuentaNoEcontrada("Cuenta no encontrada");
-        }
     }
     
-    public Cuenta depositar(String numeroCuenta, float cantidad, float tipoDivisa) throws ExcepcionSaldoMaximoSuperado {
-        Cuenta cuenta = this.recuperarCuenta(numeroCuenta);
-        if (cantidad + cuenta.getSaldo() > 5000){
+    public Cuenta depositar(Cuenta cuentaDestino, float cantidad, ArrayList<Object>tipoDivisa) throws ExcepcionSaldoMaximoSuperado {
+        cantidad = cantidad * (Integer) tipoDivisa.getFirst();
+        if (cantidad + cuentaDestino.getSaldo() > 5000){
             throw new ExcepcionSaldoMaximoSuperado("Saldo maximo superado, Intente de nuevo");
         }
-        cuenta.sumarFondos(cantidad);
+        cuentaDestino.sumarFondos(cantidad);
         Deposito deposito;
         do {
-            deposito = new Deposito(cuenta, cantidad, tipoDivisa);
+            deposito = new Deposito(cuentaDestino, cantidad, tipoDivisa);
         } while (operaciones.containsKey(deposito.getCodigo()));
         this.depositos.add(deposito);
         this.operaciones.put(deposito.getCodigo(), deposito);
-        return cuenta;
+        return cuentaDestino;
     }
 
-    public boolean limiteDeposito(){
+    public boolean limiteDeposito(Cuenta cuentaDestino){
+        GregorianCalendar fechaHoy = new GregorianCalendar();
         int limite = 0;
         for (Deposito deposito: this.depositos){
-            if (deposito.getFecha().get(Calendar.DAY_OF_MONTH) == this.fechaHoy.get(Calendar.DAY_OF_MONTH) &&
-                    deposito.getFecha().get(Calendar.MONTH) == this.fechaHoy.get(Calendar.MONTH) &&
-                    deposito.getFecha().get(Calendar.YEAR) == this.fechaHoy.get(Calendar.YEAR)){
+            if (deposito.getCuentaDestino().equals(cuentaDestino) &&
+                    deposito.getFecha().get(Calendar.DAY_OF_MONTH) == fechaHoy.get(Calendar.DAY_OF_MONTH) &&
+                    deposito.getFecha().get(Calendar.MONTH) == fechaHoy.get(Calendar.MONTH) &&
+                    deposito.getFecha().get(Calendar.YEAR) == fechaHoy.get(Calendar.YEAR)){
                 limite ++;
             }
         }
-        if (limite >= 3){
-            return true;
-        }
-        return false;
+        return limite >= 3;
     }
 
-    public Cuenta retirar(String numeroCuenta, float cantidad) throws ExcepcionFondosInsuficientes {
-        Cuenta cuenta = this.recuperarCuenta(numeroCuenta);
+    public Cuenta retirar(Cuenta cuenta, float cantidad) throws ExcepcionFondosInsuficientes {
         if (cantidad > cuenta.getSaldo()){
             throw new ExcepcionFondosInsuficientes("Fondos insuficientes, Intente de nuevo");
         }
@@ -84,24 +65,25 @@ public class Banco {
         return cuenta;
     }
 
-    public void transferir(String cuentaOrigen, String cuentaDestino, float cantidadTransferencia) throws ExcepcionFondosInsuficientes, ExcepcionSaldoMaximoSuperado, ExcepcionCuentasIguales {
-        Cuenta origen = recuperarCuenta(cuentaOrigen);
-        Cuenta destino = recuperarCuenta(cuentaDestino);
-        if (origen.equals(destino)){
+    public void transferir(Cuenta cuentaOrigen, Cuenta cuentaDestino, float cantidadTransferencia) throws ExcepcionFondosInsuficientes, ExcepcionSaldoMaximoSuperado, ExcepcionCuentasIguales, ExcepcionCuentaNoEcontrada {
+        if (cuentaOrigen == null){
+            throw new ExcepcionCuentaNoEcontrada("Cuenta no encontrada");
+        }
+        if (cuentaOrigen.equals(cuentaDestino)){
             throw new ExcepcionCuentasIguales("Las cuentas son iguales, Intente de nuevo");
         }
-        if (cantidadTransferencia > origen.getSaldo()){
+        if (cantidadTransferencia > cuentaOrigen.getSaldo()){
             throw new ExcepcionFondosInsuficientes("Fondos insuficientes, Intente de nuevo");
         }
-        if (cantidadTransferencia + destino.getSaldo() > 5000){
+        if (cantidadTransferencia + cuentaDestino.getSaldo() > 5000){
             throw new ExcepcionSaldoMaximoSuperado("Saldo maximo superado, Intente de nuevo");
         }
         Transferencia transferencia;
         do {
-            transferencia = new Transferencia(origen, destino, cantidadTransferencia);
+            transferencia = new Transferencia(cuentaOrigen, cuentaDestino, cantidadTransferencia);
         } while (operaciones.containsKey(transferencia.getCodigo()));
-        origen.restarFondos(cantidadTransferencia);
-        destino.sumarFondos(cantidadTransferencia);
+        cuentaOrigen.restarFondos(cantidadTransferencia);
+        cuentaDestino.sumarFondos(cantidadTransferencia);
         this.transferencias.add(transferencia);
         this.operaciones.put(transferencia.getCodigo(), transferencia);
         System.out.println(transferencia);
@@ -148,8 +130,7 @@ public class Banco {
     public Operacion consultarOperacion(int codigo){
         if (operaciones.isEmpty()){
             return null;
-        } else {
-            return operaciones.get(codigo);
         }
+        return operaciones.get(codigo);
     }
 }

@@ -1,4 +1,5 @@
 package bancoplus;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -7,22 +8,14 @@ public class Deposito implements Operacion{
     private GregorianCalendar fecha;
     private Cuenta cuentaDestino;
     private float cantidad;
-    private float tipoDivisa;
-    private String moneda;
+    private ArrayList<Object> tipoDivisa;
 
-     public Deposito(Cuenta cuentaDestino, float cantidad, float tipoDivisa){
+     public Deposito(Cuenta cuentaDestino, float cantidad, ArrayList<Object> tipoDivisa){
          this.codigo = (int) (Math.random() * 99999) + 100000;
          this.fecha = new GregorianCalendar();
          this.cuentaDestino = cuentaDestino;
          this.cantidad = cantidad;
          this.tipoDivisa = tipoDivisa;
-         if (this.tipoDivisa == Banco.MXN){
-             this.moneda = "MXN";
-         } else if (this.tipoDivisa == Banco.USD){
-             this.moneda = "USD";
-         } else if (this.tipoDivisa == Banco.EU){
-             this.moneda = "EU";
-         }
      }
 
      @Override
@@ -48,12 +41,8 @@ public class Deposito implements Operacion{
         return this.cantidad;
     }
 
-    public float getTipoDivisa(){
+    public ArrayList<Object> getTipoDivisa(){
         return this.tipoDivisa;
-    }
-
-    public String getMoneda(){
-        return this.moneda;
     }
 
     @Override
@@ -66,7 +55,7 @@ public class Deposito implements Operacion{
                  "Saldo de la Cuenta: %.2f MXN%n", this.getCodigo(), Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
                  Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.YEAR),
                  Calendar.getInstance().get(Calendar.HOUR), Calendar.getInstance().get(Calendar.MINUTE),
-                 this.getCuentaDestino().getNumero(), this.getCantidad(), this.getMoneda(), this.getMoneda(),
-                 this.getTipoDivisa(), this.getCuentaDestino().getSaldo());
+                 this.getCuentaDestino().getNumero(), this.getCantidad(), this.getTipoDivisa().get(1), this.getTipoDivisa().get(1),
+                 (float) this.getTipoDivisa().get(0), this.getCuentaDestino().getSaldo());
     }
 }
