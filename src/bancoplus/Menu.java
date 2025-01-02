@@ -19,16 +19,11 @@ public class Menu {
         }
         while (true) {
             System.out.println("\nSeleccione una Opción:");
-            System.out.println("1. Depositar");
-            System.out.println("2. Retirar");
-            System.out.println("3. Transferencia");
-            System.out.println("4. Consultar Depositos");
-            System.out.println("5. Consultar Transferencias");
-            System.out.println("6. Consultar Depositos por Codigo");
-            System.out.println("7. Consultar Transferencias por Codigo");
-            System.out.println("8. Actualizar Monto Transferencia");
-            System.out.println("9. Buscar Operacion por Codigo");
-            System.out.println("10. Salir");
+            System.out.println("1. Depositar                    6. Listar Transferencias");
+            System.out.println("2. Retirar                      7. Consultar Depositos por Codigo");
+            System.out.println("3. Transferencia                8. Consultar Transferencias por Codigo");
+            System.out.println("4. Actualizar Transferencia     9. Buscar Operacion por Codigo");
+            System.out.println("5. Listar Depositos             10. Salir");
             String opcion = scanner.nextLine();
             switch (opcion) {
                 case "1" -> solicitarDeposito();
@@ -128,8 +123,7 @@ public class Menu {
                         System.out.println("La cantidad no puede ser un valor negativo, Intente de nuevo");
                         scanner.nextLine();
                     } else {
-                        banco.retirar(cuenta, cantidadRetiro);
-                        System.out.printf("%n**** Retiro Realizado **** %nSaldo actual: %f%n", cuenta.getSaldo());
+                        System.out.printf("%n**** Retiro Realizado **** %nSaldo actual: %f%n", banco.retirar(cuenta, cantidadRetiro).getSaldo());
                         scanner.nextLine();
                         break;
                     }
@@ -143,30 +137,32 @@ public class Menu {
 
     private static void solicitarTransferencia() {
         Cuenta cuentaOrigen = solicitarCuenta(" Origen");
-        Cuenta cuentaDestino = solicitarCuenta(" Destino");
-        if (cuentaOrigen != null && cuentaDestino != null){
-            while (true){
-                try {
-                    System.out.print("Ingrese la cantidad a transferir: ");
-                    float cantidadTransferencia = scanner.nextFloat();
-                    if (cantidadTransferencia < 0){
-                        System.out.println("La cantida no puede ser un valor negativo, Intente de nuevo");
+        if (cuentaOrigen != null){
+            Cuenta cuentaDestino = solicitarCuenta(" Destino");
+            if (cuentaDestino != null){
+                while (true){
+                    try {
+                        System.out.print("Ingrese la cantidad a transferir: ");
+                        float cantidadTransferencia = scanner.nextFloat();
+                        if (cantidadTransferencia < 0){
+                            System.out.println("La cantida no puede ser un valor negativo, Intente de nuevo");
+                            scanner.nextLine();
+                            continue;
+                        }
+                        if (cantidadTransferencia > 2000){
+                            System.out.println("La cantidad no puede exceder los 2000 pesos, Intente de nuevo");
+                            scanner.nextLine();
+                            continue;
+                        }
+                        System.out.println(banco.transferir(cuentaOrigen, cuentaDestino, cantidadTransferencia));
                         scanner.nextLine();
-                        continue;
-                    }
-                    if (cantidadTransferencia > 2000){
-                        System.out.println("La cantidad no puede exceder los 2000 pesos, Intente de nuevo");
+                        break;
+                    } catch (ExcepcionSaldoMaximoSuperado | ExcepcionCuentasIguales | ExcepcionFondosInsuficientes |
+                             ExcepcionCuentaNoEcontrada ex){
+                        System.out.println(ex.getMessage());
                         scanner.nextLine();
-                        continue;
+                        break;
                     }
-                    banco.transferir(cuentaOrigen, cuentaDestino, cantidadTransferencia);
-                    scanner.nextLine();
-                    break;
-                } catch (ExcepcionSaldoMaximoSuperado | ExcepcionCuentasIguales | ExcepcionFondosInsuficientes |
-                         ExcepcionCuentaNoEcontrada ex){
-                    System.out.println(ex.getMessage());
-                    scanner.nextLine();
-                    break;
                 }
             }
         }

@@ -47,10 +47,8 @@ public class Banco {
         GregorianCalendar fechaHoy = new GregorianCalendar();
         int limite = 0;
         for (Deposito deposito: this.depositos){
-            if (deposito.getCuentaDestino().equals(cuentaDestino) &&
-                    deposito.getFecha().get(Calendar.DAY_OF_MONTH) == fechaHoy.get(Calendar.DAY_OF_MONTH) &&
-                    deposito.getFecha().get(Calendar.MONTH) == fechaHoy.get(Calendar.MONTH) &&
-                    deposito.getFecha().get(Calendar.YEAR) == fechaHoy.get(Calendar.YEAR)){
+            if (deposito.getCuentaDestino().equals(cuentaDestino) && deposito.getFecha().get(Calendar.DAY_OF_MONTH) == fechaHoy.get(Calendar.DAY_OF_MONTH) &&
+                    deposito.getFecha().get(Calendar.MONTH) == fechaHoy.get(Calendar.MONTH) && deposito.getFecha().get(Calendar.YEAR) == fechaHoy.get(Calendar.YEAR)){
                 limite ++;
             }
         }
@@ -65,10 +63,7 @@ public class Banco {
         return cuenta;
     }
 
-    public void transferir(Cuenta cuentaOrigen, Cuenta cuentaDestino, float cantidadTransferencia) throws ExcepcionFondosInsuficientes, ExcepcionSaldoMaximoSuperado, ExcepcionCuentasIguales, ExcepcionCuentaNoEcontrada {
-        if (cuentaOrigen == null){
-            throw new ExcepcionCuentaNoEcontrada("Cuenta no encontrada");
-        }
+    public Transferencia transferir(Cuenta cuentaOrigen, Cuenta cuentaDestino, float cantidadTransferencia) throws ExcepcionFondosInsuficientes, ExcepcionSaldoMaximoSuperado, ExcepcionCuentasIguales, ExcepcionCuentaNoEcontrada {
         if (cuentaOrigen.equals(cuentaDestino)){
             throw new ExcepcionCuentasIguales("Las cuentas son iguales, Intente de nuevo");
         }
@@ -86,7 +81,7 @@ public class Banco {
         cuentaDestino.sumarFondos(cantidadTransferencia);
         this.transferencias.add(transferencia);
         this.operaciones.put(transferencia.getCodigo(), transferencia);
-        System.out.println(transferencia);
+        return transferencia;
     }
 
     public LinkedList<Deposito> consultarDepositos(){
