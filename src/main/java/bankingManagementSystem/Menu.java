@@ -11,9 +11,6 @@ public class Menu {
     private final static Banco banco = new Banco();
 
     public static void main(String[] args) {
-        if (!"UTF-8".equals(System.out.charset().displayName())) {
-            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out), true, StandardCharsets.UTF_8));
-        }
         while (true) {
             System.out.println("\nSeleccione una Opción:");
             System.out.println("1. Depositar                    6. Listar Transferencias");
@@ -23,24 +20,55 @@ public class Menu {
             System.out.println("5. Listar Depositos             10. Salir\n");
             String opcion = scanner.nextLine();
             switch (opcion) {
-                case "1" -> solicitarDeposito();
-                case "2" -> solicitarRetiro();
-                case "3" -> solicitarTransferencia();
-                case "4" -> actualizarTransferencia();
-                case "5" -> listarDepositos();
-                case "6" -> listarTransferencias();
-                case "7" -> consultarDepositoCodigo();
-                case "8" -> consultarTransferenciaCodigo();
-                case "9" -> consultarOperacionCodigo();
-                case "10" -> solicitarSalir();
-                default -> System.out.println("Opción no válida. Por favor, seleccione una opción válida.");
+                case "1": {
+                    solicitarDeposito();
+                    break;
+                }
+                case "2": {
+                    solicitarRetiro();
+                    break;
+                }
+                case "3": {
+                    solicitarTransferencia();
+                    break;
+                }
+                case "4": {
+                    actualizarTransferencia();
+                    break;
+                }
+                case "5": {
+                    listarDepositos();
+                    break;
+                }
+                case "6": {
+                    listarTransferencias();
+                    break;
+                }
+                case "7": {
+                    consultarDepositoCodigo();
+                    break;
+                }
+                case "8": {
+                    consultarTransferenciaCodigo();
+                    break;
+                }
+                case "9": {
+                    consultarOperacionCodigo();
+                    break;
+                }
+                case "10": {
+                    solicitarSalir();
+                    break;
+                }
+                default: {
+                    System.out.println("Opción no válida. Por favor, seleccione una opción válida.");}
             }
         }
     }
 
     private static Cuenta solicitarCuenta(String nombreCuenta){
         while (true) {
-            System.out.printf("Ingrese el número de la bankingManagementSystem.Cuenta%s: ", nombreCuenta);
+            System.out.printf("Ingrese el número de la Cuenta%s: ", nombreCuenta);
             String numeroCuenta = scanner.nextLine();
             if (numeroCuenta.length() != 4) {
                 System.out.println("%n**** La entrada no es de 4 cifras, Intente de nuevo ****");
@@ -52,7 +80,7 @@ public class Menu {
             }
             Cuenta cuenta = banco.recuperarCuenta(numeroCuenta);
             if (cuenta == null) {
-                System.out.println("%n**** bankingManagementSystem.Cuenta No Encontrada ****");
+                System.out.println("%n**** Cuenta No Encontrada ****");
                 return null;
             }
             return cuenta;
@@ -73,10 +101,19 @@ public class Menu {
                     System.out.println("3. Euros (EU)");
                     String opcion = scanner.nextLine();
                     switch (opcion) {
-                        case "1" -> tipoDivisa = Banco.MXN;
-                        case "2" -> tipoDivisa = Banco.USD;
-                        case "3" -> tipoDivisa = Banco.EU;
-                        default -> {
+                        case "1": {
+                            tipoDivisa = Banco.MXN;
+                            break;
+                        }
+                        case "2": {
+                            tipoDivisa = Banco.USD;
+                            break;
+                        }
+                        case "3": {
+                            tipoDivisa = Banco.EU;
+                            break;
+                        }
+                        default: {
                             System.out.println("Opción no válida. Por favor, seleccione una opción válida.");
                             continue;
                         }
@@ -93,7 +130,7 @@ public class Menu {
                             scanner.nextLine();
                         } else {
                             System.out.println(banco.depositar(cuentaDestino, cantidadDeposito, tipoDivisa));
-                            System.out.println("%n**** bankingManagementSystem.Deposito Realizado ****");
+                            System.out.println("%n**** Deposito Realizado ****");
                             scanner.nextLine();
                             break;
                         }
@@ -231,7 +268,7 @@ public class Menu {
                 scanner.nextLine();
             }
         } catch (InputMismatchException ex){
-            System.out.println("El Codigo de bankingManagementSystem.Deposito Debe ser un Valor Numerico");
+            System.out.println("El Codigo de Deposito Debe ser un Valor Numerico");
             scanner.nextLine();
         }
     }
@@ -250,7 +287,7 @@ public class Menu {
                 return transferencia;
             }
         } catch (InputMismatchException ex){
-            System.out.println("El Codigo de bankingManagementSystem.Transferencia Debe ser un Valor Numerico");
+            System.out.println("El Codigo de Transferencia Debe ser un Valor Numerico");
             scanner.nextLine();
         }
         return null;
@@ -268,7 +305,7 @@ public class Menu {
                 scanner.nextLine();
             }
         } catch (InputMismatchException ex){
-            System.out.println("El Codigo de bankingManagementSystem.Operacion Debe ser un Valor Numerico");
+            System.out.println("El Codigo de Operacion Debe ser un Valor Numerico");
             scanner.nextLine();
         }
     }

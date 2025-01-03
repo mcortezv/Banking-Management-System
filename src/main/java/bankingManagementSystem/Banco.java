@@ -29,7 +29,7 @@ public class Banco {
     }
 
     public Deposito depositar(Cuenta cuentaDestino, float cantidad, ArrayList<Object>tipoDivisa) throws SaldoMaximoSuperadoException {
-        cantidad = cantidad * (Integer) tipoDivisa.getFirst();
+        cantidad = cantidad * (Integer) tipoDivisa.get(0);
         if (cantidad + cuentaDestino.getSaldo() > 5000){
             throw new SaldoMaximoSuperadoException("Saldo maximo superado, Intente de nuevo");
         }

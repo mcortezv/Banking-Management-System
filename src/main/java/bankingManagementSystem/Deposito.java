@@ -51,10 +51,10 @@ public class Deposito implements Operacion {
     public String toString(){
         return String.format("%nCodigo: %d%n" +
                         "Realizado el %02d de %02d de %d a las %02d:%02d%n" +
-                        "bankingManagementSystem.Cuenta Destino: %s%n" +
+                        "Cuenta Destino: %s%n" +
                         "Cantidad Depositada: %.2f %s%n" +
                         "Tipo Cambio: 1 %s = %d MXN%n" +
-                        "Saldo de la bankingManagementSystem.Cuenta: %.2f MXN%n", this.getCodigo(), Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+                        "Saldo de la Cuenta: %.2f MXN%n", this.getCodigo(), Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
                 Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.HOUR), Calendar.getInstance().get(Calendar.MINUTE),
                 this.getCuentaDestino().getNumero(), this.getMonto(), this.getTipoDivisa().get(1), this.getTipoDivisa().get(1),

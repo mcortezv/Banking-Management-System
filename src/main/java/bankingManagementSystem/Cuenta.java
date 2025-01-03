@@ -38,7 +38,7 @@ public class Cuenta {
 
     @Override
     public String toString(){
-        return String.format("Codigo de bankingManagementSystem.Cuenta: %s%n" +
+        return String.format("Codigo de Cuenta: %s%n" +
                 "Saldo Actual: %.2f", this.getNumero(), this.getSaldo());
     }
 }
