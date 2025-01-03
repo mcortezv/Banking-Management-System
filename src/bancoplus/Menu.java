@@ -4,10 +4,7 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Menu {
     private final static Scanner scanner = new Scanner(System.in);
@@ -23,7 +20,7 @@ public class Menu {
             System.out.println("2. Retirar                      7. Consultar Depositos por Codigo");
             System.out.println("3. Transferencia                8. Consultar Transferencias por Codigo");
             System.out.println("4. Actualizar Transferencia     9. Buscar Operacion por Codigo");
-            System.out.println("5. Listar Depositos             10. Salir");
+            System.out.println("5. Listar Depositos             10. Salir\n");
             String opcion = scanner.nextLine();
             switch (opcion) {
                 case "1" -> solicitarDeposito();
@@ -42,29 +39,23 @@ public class Menu {
     }
 
     private static Cuenta solicitarCuenta(String nombreCuenta){
-        String numeroCuenta;
-        Cuenta cuenta;
         while (true) {
-            System.out.printf("\nIngrese el número de la Cuenta%s: ", nombreCuenta);
-            numeroCuenta = scanner.next();
+            System.out.printf("Ingrese el número de la Cuenta%s: ", nombreCuenta);
+            String numeroCuenta = scanner.nextLine();
             if (numeroCuenta.length() != 4) {
-                System.out.println("La entrada no es de 4 cifras, Intente de nuevo");
-                scanner.nextLine();
+                System.out.println("%n**** La entrada no es de 4 cifras, Intente de nuevo ****");
                 return null;
-            } else if (validarDigitosNumeroCuenta(numeroCuenta)) {
-                System.out.println("La entrada no es un valor entero, Intente de nuevo");
-                scanner.nextLine();
-                return null;
-            } else {
-                cuenta = banco.recuperarCuenta(numeroCuenta);
-                if (cuenta == null) {
-                    System.out.println("Cuenta No Encontrada");
-                    scanner.nextLine();
-                    return null;
-                }
-                scanner.nextLine();
-                return cuenta;
             }
+            if (validarDigitosNumeroCuenta(numeroCuenta)) {
+                System.out.println("%n**** La entrada no es un valor entero, Intente de nuevo ****");
+                return null;
+            }
+            Cuenta cuenta = banco.recuperarCuenta(numeroCuenta);
+            if (cuenta == null) {
+                System.out.println("%n**** Cuenta No Encontrada ****");
+                return null;
+            }
+            return cuenta;
         }
     }
 
@@ -74,17 +65,23 @@ public class Menu {
             if (banco.limiteDeposito(cuentaDestino)){
                 System.out.printf("%nLimite de Depositos Diarios Superado%n");
             } else {
-                System.out.println("\nIngrese el tipo de divisa:");
-                System.out.println("1. Pesos (MXN)");
-                System.out.println("2. Dolares (USD)");
-                System.out.println("3. Euros (EU)");
                 ArrayList<Object> tipoDivisa = null;
-                String opcion = scanner.nextLine();
-                switch (opcion) {
-                    case "1" -> tipoDivisa = Banco.MXN;
-                    case "2" -> tipoDivisa = Banco.USD;
-                    case "3" -> tipoDivisa = Banco.EU;
-                    default -> System.out.println("Opción no válida. Por favor, seleccione una opción válida.");
+                while (true){
+                    System.out.println("\nIngrese el tipo de divisa:");
+                    System.out.println("1. Pesos (MXN)");
+                    System.out.println("2. Dolares (USD)");
+                    System.out.println("3. Euros (EU)");
+                    String opcion = scanner.nextLine();
+                    switch (opcion) {
+                        case "1" -> tipoDivisa = Banco.MXN;
+                        case "2" -> tipoDivisa = Banco.USD;
+                        case "3" -> tipoDivisa = Banco.EU;
+                        default -> {
+                            System.out.println("Opción no válida. Por favor, seleccione una opción válida.");
+                            continue;
+                        }
+                    }
+                    break;
                 }
                 float cantidadDeposito;
                 while (true){
@@ -95,8 +92,8 @@ public class Menu {
                             System.out.println("La cantida no puede ser un valor negativo, Intente de nuevo");
                             scanner.nextLine();
                         } else {
-                            System.out.println("%n**** Deposito Realizado ****");
                             System.out.println(banco.depositar(cuentaDestino, cantidadDeposito, tipoDivisa));
+                            System.out.println("%n**** Deposito Realizado ****");
                             scanner.nextLine();
                             break;
                         }
@@ -130,6 +127,9 @@ public class Menu {
                 } catch (ExcepcionFondosInsuficientes ex){
                     System.out.println(ex.getMessage());
                     scanner.nextLine();
+                } catch (InputMismatchException ex){
+                    System.out.println("La Cantidad a Depositar Debe ser un Valor Numerico");
+                    scanner.nextLine();
                 }
             }
         }
@@ -147,18 +147,15 @@ public class Menu {
                         if (cantidadTransferencia < 0){
                             System.out.println("La cantida no puede ser un valor negativo, Intente de nuevo");
                             scanner.nextLine();
-                            continue;
-                        }
-                        if (cantidadTransferencia > 2000){
+                        } else if (cantidadTransferencia > 2000){
                             System.out.println("La cantidad no puede exceder los 2000 pesos, Intente de nuevo");
                             scanner.nextLine();
-                            continue;
+                        } else {
+                            System.out.println(banco.transferir(cuentaOrigen, cuentaDestino, cantidadTransferencia));
+                            scanner.nextLine();
+                            break;
                         }
-                        System.out.println(banco.transferir(cuentaOrigen, cuentaDestino, cantidadTransferencia));
-                        scanner.nextLine();
-                        break;
-                    } catch (ExcepcionSaldoMaximoSuperado | ExcepcionCuentasIguales | ExcepcionFondosInsuficientes |
-                             ExcepcionCuentaNoEcontrada ex){
+                    } catch (ExcepcionSaldoMaximoSuperado | ExcepcionCuentasIguales | ExcepcionFondosInsuficientes ex){
                         System.out.println(ex.getMessage());
                         scanner.nextLine();
                         break;
@@ -169,118 +166,119 @@ public class Menu {
     }
 
     public static void actualizarTransferencia(){
-        int codigo = consultarTransferenciaCodigo();
-        if (codigo != 0){
+        Transferencia transferencia = consultarTransferenciaCodigo();
+        if (transferencia != null){
             while (true){
-                System.out.print("Ingrese el nuevo monto: ");
-                float nuevoMonto = scanner.nextFloat();
-                if (nuevoMonto < 0){
-                    System.out.println("El nuevo monto no puede ser un valor negativo, Intente de nuevo");
-                    continue;
+                try {
+                    System.out.print("Ingrese el nuevo monto: ");
+                    float nuevoMonto = scanner.nextFloat();
+                    if (nuevoMonto < 0){
+                        System.out.println("El nuevo monto no puede ser un valor negativo, Intente de nuevo");
+                        scanner.nextLine();
+                    } else {
+                        Cuenta cuentaOrigen = transferencia.getCuentaOrigen();
+                        Cuenta cuentaDestino = transferencia.getCuentaDestino();
+                        float montoOriginal = transferencia.getMonto();
+                        cuentaOrigen.sumarFondos(montoOriginal); cuentaDestino.restarFondos(montoOriginal);
+                        cuentaOrigen.restarFondos(nuevoMonto); cuentaDestino.sumarFondos(nuevoMonto);
+                        transferencia.setMonto(nuevoMonto);
+                        transferencia.setFecha(new GregorianCalendar());
+                        System.out.println(transferencia);
+                        scanner.nextLine();
+                        break;
+                    }
+                } catch (InputMismatchException ex){
+                    System.out.println("La Cantidad a Depositar Debe ser un Valor Numerico");
+                    scanner.nextLine();
                 }
-                Transferencia transferencia = banco.consultarTransferenciaCodigo(codigo);
-                Cuenta cuentaOrigen = transferencia.getCuentaOrigen();
-                Cuenta cuentaDestino = transferencia.getCuentaDestino();
-                float montoOriginal = transferencia.getMonto();
-                cuentaOrigen.sumarFondos(montoOriginal); cuentaDestino.restarFondos(montoOriginal);
-                cuentaOrigen.restarFondos(nuevoMonto); cuentaDestino.sumarFondos(nuevoMonto);
-                transferencia.setMonto(nuevoMonto);
-                transferencia.setFecha(new GregorianCalendar());
-                break;
             }
         }
     }
 
-    private static boolean validarDigitosNumeroCuenta(String cuentaDestino){
-        for (int i = 0; i < cuentaDestino.length(); i++)
-            if (!Character.isDigit(cuentaDestino.charAt(i))){
-                return true;
-            }
-        return false;
-    }
-
     public static void listarDepositos(){
-        if (banco.consultarDepositos() == null){
+        LinkedList<Deposito> depositos = banco.consultarDepositos();
+        if (depositos == null){
             System.out.println("No se ha registrado ningun deposito");
         } else {
             System.out.println("%n**** Lista de Depositos ****");
-            for (Deposito deposito:banco.consultarDepositos()){
+            for (Deposito deposito:depositos){
                 System.out.println(deposito);
             }
         }
     }
 
     public static void listarTransferencias(){
-        if (banco.consultarTransferencias() == null){
+        LinkedList<Transferencia> transferencias = banco.consultarTransferencias();
+        if (transferencias == null){
             System.out.println("No se ha registrado ninguna transferencia");
         } else {
             System.out.println("%n**** Lista de Transferencias ****");
-            for (Transferencia transferencia: banco.consultarTransferencias()){
+            for (Transferencia transferencia: transferencias){
                 System.out.println(transferencia);
             }
         }
     }
 
     public static void consultarDepositoCodigo(){
-        int codigo = 0;
-        while (true) {
-            try {
-                System.out.println("\nIngrese el codigo de deposito:");
-                codigo = scanner.nextInt();
-            } catch (InputMismatchException ex){
-                System.out.println(ex.getMessage());
+        try {
+            System.out.print("\nIngrese el codigo de deposito: ");
+            int codigo = scanner.nextInt();
+            if (banco.consultarDepositoCodigo(codigo) == null){
+                System.out.println("Codigo de deposito no encontrado");
                 scanner.nextLine();
-                continue;
+            } else {
+                System.out.println(banco.consultarDepositoCodigo(codigo));
+                scanner.nextLine();
             }
-            break;
-        }
-        if (banco.consultarDepositoCodigo(codigo) == null){
-            System.out.println("Codigo de deposito no encontrado");
-        } else {
-            System.out.println(banco.consultarDepositoCodigo(codigo));
+        } catch (InputMismatchException ex){
+            System.out.println("El Codigo de Deposito Debe ser un Valor Numerico");
+            scanner.nextLine();
         }
     }
 
-    public static int consultarTransferenciaCodigo(){
-        int codigo = 0;
-        while (true) {
-            try {
-                System.out.println("\nIngrese el codigo de transferencia:");
-                codigo = scanner.nextInt();
-            } catch (InputMismatchException ex){
-                System.out.println(ex.getMessage());
+    public static Transferencia consultarTransferenciaCodigo(){
+        try {
+            System.out.print("\nIngrese el codigo de transferencia: ");
+            int codigo = scanner.nextInt();
+            Transferencia transferencia = banco.consultarTransferenciaCodigo(codigo);
+            if (transferencia == null){
+                System.out.println("Codigo de transferencia no encontrado");
                 scanner.nextLine();
-                continue;
+            } else {
+                System.out.println(banco.consultarTransferenciaCodigo(codigo));
+                scanner.nextLine();
+                return transferencia;
             }
-            break;
+        } catch (InputMismatchException ex){
+            System.out.println("El Codigo de Transferencia Debe ser un Valor Numerico");
+            scanner.nextLine();
         }
-        if (banco.consultarTransferenciaCodigo(codigo) == null){
-            System.out.println("Codigo de transferencia no encontrado");
-            return 0;
-        } else {
-            System.out.println(banco.consultarTransferenciaCodigo(codigo));
-        }
-        return codigo;
+        return null;
     }
 
     public static void consultarOperacionCodigo(){
-        int codigo = 0;
-        while (true) {
-            try {
-                System.out.println("\nIngrese el codigo de operacion:");
-                codigo = scanner.nextInt();
-            } catch (InputMismatchException ex){
-                System.out.println(ex.getMessage());
+        try {
+            System.out.print("\nIngrese el codigo de operacion: ");
+            int codigo = scanner.nextInt();
+            if (banco.consultarOperacion(codigo) == null){
+                System.out.println("Codigo de operacion no encontrado");
                 scanner.nextLine();
-                continue;
+            } else {
+                System.out.println(banco.consultarOperacion(codigo));
+                scanner.nextLine();
             }
-            break;
+        } catch (InputMismatchException ex){
+            System.out.println("El Codigo de Operacion Debe ser un Valor Numerico");
+            scanner.nextLine();
         }
-        if (banco.consultarOperacion(codigo) == null){
-            System.out.println("Codigo de operacion no encontrado");
-        } else {
-            System.out.println(banco.consultarOperacion(codigo));
-        }
+    }
+
+    private static boolean validarDigitosNumeroCuenta(String cuenta){
+        for (int i = 0; i < cuenta.length(); i++)
+            if (!Character.isDigit(cuenta.charAt(i))){
+                return true;
+            }
+        return false;
     }
 
     private static void solicitarSalir(){

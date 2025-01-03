@@ -28,7 +28,7 @@ public class Banco {
                             .orElse(null);
     }
     
-    public Cuenta depositar(Cuenta cuentaDestino, float cantidad, ArrayList<Object>tipoDivisa) throws ExcepcionSaldoMaximoSuperado {
+    public Deposito depositar(Cuenta cuentaDestino, float cantidad, ArrayList<Object>tipoDivisa) throws ExcepcionSaldoMaximoSuperado {
         cantidad = cantidad * (Integer) tipoDivisa.getFirst();
         if (cantidad + cuentaDestino.getSaldo() > 5000){
             throw new ExcepcionSaldoMaximoSuperado("Saldo maximo superado, Intente de nuevo");
@@ -40,7 +40,7 @@ public class Banco {
         } while (operaciones.containsKey(deposito.getCodigo()));
         this.depositos.add(deposito);
         this.operaciones.put(deposito.getCodigo(), deposito);
-        return cuentaDestino;
+        return deposito;
     }
 
     public boolean limiteDeposito(Cuenta cuentaDestino){
@@ -63,7 +63,7 @@ public class Banco {
         return cuenta;
     }
 
-    public Transferencia transferir(Cuenta cuentaOrigen, Cuenta cuentaDestino, float cantidadTransferencia) throws ExcepcionFondosInsuficientes, ExcepcionSaldoMaximoSuperado, ExcepcionCuentasIguales, ExcepcionCuentaNoEcontrada {
+    public Transferencia transferir(Cuenta cuentaOrigen, Cuenta cuentaDestino, float cantidadTransferencia) throws ExcepcionFondosInsuficientes, ExcepcionSaldoMaximoSuperado, ExcepcionCuentasIguales {
         if (cuentaOrigen.equals(cuentaDestino)){
             throw new ExcepcionCuentasIguales("Las cuentas son iguales, Intente de nuevo");
         }
@@ -99,9 +99,6 @@ public class Banco {
     }
 
     public Deposito consultarDepositoCodigo(int codigo){
-        if (depositos.isEmpty()){
-            return null;
-        }
         for (Deposito deposito: depositos){
             if (deposito.getCodigo() == codigo){
                 return deposito;
@@ -111,9 +108,6 @@ public class Banco {
     }
 
     public Transferencia consultarTransferenciaCodigo(int codigo){
-        if (transferencias.isEmpty()){
-            return null;
-        }
         for (Transferencia transferencia: transferencias){
             if (transferencia.getCodigo() == codigo){
                 return transferencia;

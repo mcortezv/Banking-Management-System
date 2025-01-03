@@ -32,20 +32,22 @@ public class Transferencia implements Operacion{
         return this.fecha;
     }
 
-    public Cuenta getCuentaOrigen(){
-        return this.cuentaOrigen;
-    }
-
+    @Override
     public Cuenta getCuentaDestino(){
         return this.cuentaDestino;
+    }
+
+    @Override
+    public float getMonto(){
+        return this.monto;
     }
 
     public void setMonto(float monto){
         this.monto = monto;
     }
 
-    public float getMonto(){
-        return this.monto;
+    public Cuenta getCuentaOrigen(){
+        return this.cuentaOrigen;
     }
 
     @Override
