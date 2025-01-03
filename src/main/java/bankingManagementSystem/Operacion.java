@@ -1,4 +1,4 @@
-package bancoplus;
+package bankingManagementSystem;
 import java.util.GregorianCalendar;
 
 public interface Operacion {

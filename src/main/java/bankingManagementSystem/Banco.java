@@ -1,5 +1,5 @@
-package bancoplus;
-import bancoplus.excepciones.*;
+package bankingManagementSystem;
+import exceptions.*;
 import java.util.*;
 
 public class Banco {
@@ -23,15 +23,15 @@ public class Banco {
 
     public Cuenta recuperarCuenta(String numeroCuenta){
         return this.cuentas.stream()
-                            .filter(cuenta -> cuenta.getNumero().equals(numeroCuenta))
-                            .findAny()
-                            .orElse(null);
+                .filter(cuenta -> cuenta.getNumero().equals(numeroCuenta))
+                .findAny()
+                .orElse(null);
     }
-    
-    public Deposito depositar(Cuenta cuentaDestino, float cantidad, ArrayList<Object>tipoDivisa) throws ExcepcionSaldoMaximoSuperado {
+
+    public Deposito depositar(Cuenta cuentaDestino, float cantidad, ArrayList<Object>tipoDivisa) throws SaldoMaximoSuperadoException {
         cantidad = cantidad * (Integer) tipoDivisa.getFirst();
         if (cantidad + cuentaDestino.getSaldo() > 5000){
-            throw new ExcepcionSaldoMaximoSuperado("Saldo maximo superado, Intente de nuevo");
+            throw new SaldoMaximoSuperadoException("Saldo maximo superado, Intente de nuevo");
         }
         cuentaDestino.sumarFondos(cantidad);
         Deposito deposito;
@@ -55,23 +55,23 @@ public class Banco {
         return limite >= 3;
     }
 
-    public Cuenta retirar(Cuenta cuenta, float cantidad) throws ExcepcionFondosInsuficientes {
+    public Cuenta retirar(Cuenta cuenta, float cantidad) throws FondosInsuficientesException {
         if (cantidad > cuenta.getSaldo()){
-            throw new ExcepcionFondosInsuficientes("Fondos insuficientes, Intente de nuevo");
+            throw new FondosInsuficientesException("Fondos insuficientes, Intente de nuevo");
         }
         cuenta.restarFondos(cantidad);
         return cuenta;
     }
 
-    public Transferencia transferir(Cuenta cuentaOrigen, Cuenta cuentaDestino, float cantidadTransferencia) throws ExcepcionFondosInsuficientes, ExcepcionSaldoMaximoSuperado, ExcepcionCuentasIguales {
+    public Transferencia transferir(Cuenta cuentaOrigen, Cuenta cuentaDestino, float cantidadTransferencia) throws FondosInsuficientesException, SaldoMaximoSuperadoException, CuentasIgualesException {
         if (cuentaOrigen.equals(cuentaDestino)){
-            throw new ExcepcionCuentasIguales("Las cuentas son iguales, Intente de nuevo");
+            throw new CuentasIgualesException("Las cuentas son iguales, Intente de nuevo");
         }
         if (cantidadTransferencia > cuentaOrigen.getSaldo()){
-            throw new ExcepcionFondosInsuficientes("Fondos insuficientes, Intente de nuevo");
+            throw new FondosInsuficientesException("Fondos insuficientes, Intente de nuevo");
         }
         if (cantidadTransferencia + cuentaDestino.getSaldo() > 5000){
-            throw new ExcepcionSaldoMaximoSuperado("Saldo maximo superado, Intente de nuevo");
+            throw new SaldoMaximoSuperadoException("Saldo maximo superado, Intente de nuevo");
         }
         Transferencia transferencia;
         do {

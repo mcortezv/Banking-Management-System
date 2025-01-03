@@ -1,5 +1,4 @@
-package bancoplus;
-
+package bankingManagementSystem;
 public class Cuenta {
     private final String numero;
     private float saldo;
@@ -16,11 +15,11 @@ public class Cuenta {
     public float getSaldo() {
         return saldo;
     }
-    
+
     public void restarFondos(float cantidad){
         this.saldo -= cantidad;
     }
-    
+
     public void sumarFondos(float cantidad){
         this.saldo += cantidad;
     }
@@ -39,8 +38,7 @@ public class Cuenta {
 
     @Override
     public String toString(){
-        return String.format("Codigo de Cuenta: %s%n" +
+        return String.format("Codigo de bankingManagementSystem.Cuenta: %s%n" +
                 "Saldo Actual: %.2f", this.getNumero(), this.getSaldo());
     }
 }
-

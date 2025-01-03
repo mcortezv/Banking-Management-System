@@ -1,5 +1,5 @@
-package bancoplus;
-import bancoplus.excepciones.*;
+package bankingManagementSystem;
+import exceptions.*;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -40,7 +40,7 @@ public class Menu {
 
     private static Cuenta solicitarCuenta(String nombreCuenta){
         while (true) {
-            System.out.printf("Ingrese el número de la Cuenta%s: ", nombreCuenta);
+            System.out.printf("Ingrese el número de la bankingManagementSystem.Cuenta%s: ", nombreCuenta);
             String numeroCuenta = scanner.nextLine();
             if (numeroCuenta.length() != 4) {
                 System.out.println("%n**** La entrada no es de 4 cifras, Intente de nuevo ****");
@@ -52,7 +52,7 @@ public class Menu {
             }
             Cuenta cuenta = banco.recuperarCuenta(numeroCuenta);
             if (cuenta == null) {
-                System.out.println("%n**** Cuenta No Encontrada ****");
+                System.out.println("%n**** bankingManagementSystem.Cuenta No Encontrada ****");
                 return null;
             }
             return cuenta;
@@ -93,11 +93,11 @@ public class Menu {
                             scanner.nextLine();
                         } else {
                             System.out.println(banco.depositar(cuentaDestino, cantidadDeposito, tipoDivisa));
-                            System.out.println("%n**** Deposito Realizado ****");
+                            System.out.println("%n**** bankingManagementSystem.Deposito Realizado ****");
                             scanner.nextLine();
                             break;
                         }
-                    } catch (ExcepcionSaldoMaximoSuperado ex){
+                    } catch (SaldoMaximoSuperadoException ex){
                         System.out.println(ex.getMessage());
                         scanner.nextLine();
                     } catch (InputMismatchException ex){
@@ -124,7 +124,7 @@ public class Menu {
                         scanner.nextLine();
                         break;
                     }
-                } catch (ExcepcionFondosInsuficientes ex){
+                } catch (FondosInsuficientesException ex){
                     System.out.println(ex.getMessage());
                     scanner.nextLine();
                 } catch (InputMismatchException ex){
@@ -155,7 +155,7 @@ public class Menu {
                             scanner.nextLine();
                             break;
                         }
-                    } catch (ExcepcionSaldoMaximoSuperado | ExcepcionCuentasIguales | ExcepcionFondosInsuficientes ex){
+                    } catch (SaldoMaximoSuperadoException | CuentasIgualesException | FondosInsuficientesException ex){
                         System.out.println(ex.getMessage());
                         scanner.nextLine();
                         break;
@@ -231,7 +231,7 @@ public class Menu {
                 scanner.nextLine();
             }
         } catch (InputMismatchException ex){
-            System.out.println("El Codigo de Deposito Debe ser un Valor Numerico");
+            System.out.println("El Codigo de bankingManagementSystem.Deposito Debe ser un Valor Numerico");
             scanner.nextLine();
         }
     }
@@ -250,7 +250,7 @@ public class Menu {
                 return transferencia;
             }
         } catch (InputMismatchException ex){
-            System.out.println("El Codigo de Transferencia Debe ser un Valor Numerico");
+            System.out.println("El Codigo de bankingManagementSystem.Transferencia Debe ser un Valor Numerico");
             scanner.nextLine();
         }
         return null;
@@ -268,7 +268,7 @@ public class Menu {
                 scanner.nextLine();
             }
         } catch (InputMismatchException ex){
-            System.out.println("El Codigo de Operacion Debe ser un Valor Numerico");
+            System.out.println("El Codigo de bankingManagementSystem.Operacion Debe ser un Valor Numerico");
             scanner.nextLine();
         }
     }
