@@ -64,7 +64,7 @@ git clone https://github.com/mcortezv/Banking-Management-System
 
 ### 2. Navigate to the project directory:
 ```bash
-cd Banking Management System
+cd Banking-Management-System
 ```
 
 ### 3. Compile the project:
