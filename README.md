@@ -25,7 +25,7 @@ This project is a Java-based banking application that provides features for depo
 ### Menu-Driven User Interface:
 - Intuitive text-based interface for user interaction.
 
-## Project Structure
+## **Project Structure**
 
 ```bash
 Banking Management System/
@@ -43,7 +43,7 @@ Banking Management System/
         ├── SaldoMaximoSuperadoException.java    
 ```
 
-## Main Components
+## **Main Components**
 
 | Class               | Description                                                                 |
 |----------------------|-----------------------------------------------------------------------------|
@@ -55,11 +55,11 @@ Banking Management System/
 | `Menu`      | Provides the user interface to interact with the banking system. |
 ---
 
-## Usage
+## **Usage**
 
 ### 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/mcortezv/Banking-Management-System
 ```
 
 ### 2. Navigate to the project directory:
@@ -77,5 +77,5 @@ javac -Xlint:-options -source 8 -target 8 -d out src/main/java/bankingManagement
 java -cp out bankingManagementSystem.Menu
 ```
 
-## License
+## **License**
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE.md) file for more details.
