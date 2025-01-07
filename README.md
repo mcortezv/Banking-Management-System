@@ -1,6 +1,6 @@
 # **Banking Management System**
 
-This project is a Java-based banking application that provides features for deposits, withdrawals, and transfers, while managing accounts and operations efficiently. The project implements custom exceptions to handle specific error scenarios, ensuring robust error management.
+This project is a Java-based banking application that provides features for deposits, withdrawals, and transfers, while managing accounts and operations efficiently. The project implements custom exceptions to handle specific error scenarios, ensuring robust error management. [Versión Español](./README.es.md)
 
 ---
 
@@ -27,7 +27,7 @@ This project is a Java-based banking application that provides features for depo
 
 ## **Project Structure**
 
-```bash
+```plaintext
 Banking Management System/
 ├── src/main/java/         
     ├── bankingManagementSystem 
@@ -45,14 +45,14 @@ Banking Management System/
 
 ## **Main Components**
 
-| Class               | Description                                                                 |
-|----------------------|-----------------------------------------------------------------------------|
-| `Banco`           | Central class for managing accounts, deposits, and transfers.functionalities. |
-| `Cuenta`      | Represents individual bank accounts with account number and balance. |
-| `Operacion (Interface)`        | Defines the structure for banking operations (e.g., deposits and transfers). |
-| `Deposito`        | Implementation of the Operacion interface for deposit transactions. |
-| `Transferencia`| Implementation of the Operacion interface for fund transfers. |
-| `Menu`      | Provides the user interface to interact with the banking system. |
+| Class                   | Description                                                                   |
+|-------------------------|-------------------------------------------------------------------------------|
+| `Banco`                 | Central class for managing accounts, deposits, and transfers.functionalities. |
+| `Cuenta`                | Represents individual bank accounts with account number and balance.          |
+| `Operacion (Interface)` | Defines the structure for banking operations (e.g., deposits and transfers).  |
+| `Deposito`              | Implementation of the Operacion interface for deposit transactions.           |
+| `Transferencia`         | Implementation of the Operacion interface for fund transfers.                 |
+| `Menu`                  | Provides the user interface to interact with the banking system.              |
 ---
 
 ## **Usage**
